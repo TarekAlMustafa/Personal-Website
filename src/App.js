@@ -1,32 +1,95 @@
-import { ThemeProvider } from 'styled-components';
-import Header from './components/Header'
-import GlobalStyles from './components/styledComponents/Global'
-import Navbar from './components/Navbar'
-import { BrowserRouter as Router } from 'react-router-dom';
+import React , { useState } from 'react'
+import { ReactComponent as MenuIcon } from './images/menu.svg'
+import { CSSTransition } from 'react-transition-group'
 
-const theme = {
-  colors: {
-    header:'#d9d9d9', 
-    body:'#404040',
-    footer:'#d9d9d9',
-    headerBackground: '#404040',
-    bodyBackground: '#d9d9d9',
-    hover: '#595959'
-  },
+
+
+function App() {
+  return (
+    <Navbar>
+      <NavItem icon={<MenuIcon/>}>
+        <DropdownMenu></DropdownMenu>
+      </NavItem>
+    </Navbar>
+  )
 }
 
-function App(){
+function DropdownMenu() {
+
+  const [activeMenu, setActiveMenu] = useState('main'); // settings, animals
+  const [menuHeight, setMenuHeight] = useState(null);
+
+  function calcHeight(el){
+    const height = el.offsetHeight;
+    setMenuHeight(height);
+  }
+
+  function DropdownItem(props) {
+    return(
+      <a href='#' className='menu-item' onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
+        <span className='icon-button'> {props.leftIcon} </span>
+        {props.children}
+        <span className='icon-right'> {props.rightIcon} </span>
+      </a>
+    )
+  }
+
+  return(
+    <div className='dropdown' style={{ height: menuHeight }}>
+      <CSSTransition 
+        in={activeMenu === 'main'} 
+        unmountOnExit 
+        timeout={500} 
+        classNames='menu-primary'
+        onEnter={calcHeight}
+      >
+        <div className='menu'>
+
+          <DropdownItem>Resume</DropdownItem>
+          <DropdownItem goToMenu='hobbies'>Hobbies</DropdownItem>
+          <DropdownItem>About</DropdownItem>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition 
+        in={activeMenu === 'hobbies'} 
+        unmountOnExit 
+        timeout={500} 
+        classNames='menu-secondary'
+        onEnter={calcHeight}
+      >
+        <div className='menu'>
+          <DropdownItem goToMenu='main'>Back</DropdownItem>
+          <DropdownItem>1</DropdownItem>
+          <DropdownItem>2</DropdownItem>
+          <DropdownItem>3</DropdownItem>
+        </div>
+      </CSSTransition>
+    </div>
+  )
+}
+
+function Navbar( props ) {
   return (
-    <ThemeProvider theme = {theme}>
-     <>
-      <GlobalStyles />
-      <Header/>
-      <Router>
-        <Navbar/>
-      </Router>
-     </>
-    </ThemeProvider>
-  );
+    <nav className='navbar'>
+      <ul className='navbar-nav'>
+        { props.children }
+      </ul>
+    </nav>
+  )
+}
+
+function NavItem(props) {
+  const [open, setOpen] = useState(false);
+  return (
+    <li className='nav-item'>
+      <a href='#' className='icon-button' onClick={() => setOpen(!open)}>
+        {props.icon}
+      </a>
+
+      {open && props.children}
+    </li>
+  )
 }
 
 export default App;
