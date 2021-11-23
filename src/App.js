@@ -1,16 +1,35 @@
 import React , { useState } from 'react'
 import { ReactComponent as MenuIcon } from './images/menu.svg'
+import { ReactComponent as HomeIcon } from './images/home.svg'
+import { ReactComponent as ArrowForward } from './images/arrow_forward.svg'
+import { ReactComponent as ArrowBack } from './images/arrow_back.svg'
+import { ReactComponent as AboutIcon } from './images/about.svg'
+import { ReactComponent as ResumeIcon } from './images/resume.svg'
 import { CSSTransition } from 'react-transition-group'
-
+import { Link, BrowserRouter as Router, Routes, Switch, Route } from 'react-router-dom';
+import Home from './pages/Home.js'
+import About from './pages/About.js'
+import Resume from './pages/Resume.js'
 
 
 function App() {
   return (
-    <Navbar>
-      <NavItem icon={<MenuIcon/>}>
-        <DropdownMenu></DropdownMenu>
-      </NavItem>
-    </Navbar>
+    <Router>
+      <Navbar>
+     {/*   <Link to='/home'> */ }
+          <NavItem icon={<HomeIcon/>}/>
+     {/*   </Link> */}
+        <NavItem icon={<MenuIcon/>}>
+          <DropdownMenu/>
+        </NavItem>
+      </Navbar>
+
+      <Routes>
+        <Route path='/home' element={<Home/>} />
+         <Route path='/about' element={<About/>} />
+         <Route path='/resume' element={<Resume/>} />
+      </Routes>
+    </Router>
   )
 }
 
@@ -44,25 +63,34 @@ function DropdownMenu() {
         onEnter={calcHeight}
       >
         <div className='menu'>
-
-          <DropdownItem>Resume</DropdownItem>
-          <DropdownItem goToMenu='hobbies'>Hobbies</DropdownItem>
-          <DropdownItem>About</DropdownItem>
+          <Link to='/resume'>
+           <DropdownItem leftIcon={<ResumeIcon />}>Resume</DropdownItem>
+          </Link>
+          <DropdownItem goToMenu='freelance' leftIcon={<ArrowForward />}>Freelance</DropdownItem>
+          <Link to='/about'>
+            <DropdownItem leftIcon={<AboutIcon />}>About</DropdownItem>
+          </Link>
         </div>
       </CSSTransition>
 
       <CSSTransition 
-        in={activeMenu === 'hobbies'} 
+        in={activeMenu === 'freelance'} 
         unmountOnExit 
         timeout={500} 
         classNames='menu-secondary'
         onEnter={calcHeight}
       >
         <div className='menu'>
-          <DropdownItem goToMenu='main'>Back</DropdownItem>
-          <DropdownItem>1</DropdownItem>
-          <DropdownItem>2</DropdownItem>
-          <DropdownItem>3</DropdownItem>
+          <DropdownItem goToMenu='main' leftIcon={<ArrowBack />}>Back</DropdownItem>
+          <Link to='/1'>
+            <DropdownItem>1</DropdownItem>
+          </Link>
+          <Link to='/2'>
+            <DropdownItem>2</DropdownItem>
+          </Link>
+          <Link to='/3'>
+            <DropdownItem>3</DropdownItem>
+          </Link>
         </div>
       </CSSTransition>
     </div>
